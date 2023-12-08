@@ -1,5 +1,6 @@
 ﻿using Blogify_API.Dtos;
 using Delivery_API.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,6 +55,54 @@ namespace Blogify_API.Controllers
         public async Task<ActionResult<TokenResponse>> Login([FromBody] LoginDto login)
         {
             return Ok(await _userService.Login(login));
+        }
+        #endregion
+
+        #region Log out
+        /// <summary>
+        /// Log out system user
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("logout")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Logout()
+        {
+            var token = Request.Headers["authorization"].Single()?.Split(" ").Last();
+            await _userService.Logout(token);
+            return Ok(new { message = "Logged Out" });
+        }
+        #endregion
+
+        #region Get user profile
+        /// <summary>
+        /// Get user profile
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("profile")]
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetProfile()
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            return Ok(await _userService.GetProfile(userId));
+        }
+        #endregion
+
+        #region Edit user profile
+        /// <summary>
+        /// Edit user profile
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut("profile")]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> EditProfile([FromBody] UserEditDto profile)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            await _userService.EditProfile(profile, userId);
+            return Ok("Profile updated successfully");
         }
         #endregion
     }

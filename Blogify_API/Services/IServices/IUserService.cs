@@ -10,5 +10,7 @@ namespace Delivery_API.Services.IServices
         Task<TokenResponse> Login(LoginDto login);
         Task<UserDto> GetProfile(Guid userId);
         Task EditProfile(UserEditDto userEditDto, Guid userId);
+        Task Logout(string token);
+        Task<bool> IsActiveToken(string token);
     }
 }

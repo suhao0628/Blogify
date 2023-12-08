@@ -36,6 +36,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddScoped<ExceptionHandleMiddleware>();
 
+builder.Services.AddScoped<JwtMiddleware>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -116,6 +117,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseMiddleware<ExceptionHandleMiddleware>();
+app.UseMiddleware<JwtMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Blogify_API;
 using Blogify_API.Datas;
 using Blogify_API.Dtos;
 using Blogify_API.Exceptions;
 using Blogify_API.Services.IServices;
 using Delivery_API.Services.IServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Delivery_API.Services
@@ -14,7 +17,9 @@ namespace Delivery_API.Services
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
         private readonly IJwtService _jwtService;
-        
+        private readonly IDistributedCache _cache;
+        private readonly IOptions<JwtConfig> _jwtOptions;
+
         public UserService(AppDbContext context, IMapper mapper, IJwtService jwtService)
         {
             _context = context;
@@ -92,6 +97,19 @@ namespace Delivery_API.Services
 
             _context.Update(user);
             await _context.SaveChangesAsync();
+        }
+        public async Task Logout(string token)
+        {
+            await _cache.SetStringAsync(token,
+                " ", new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow =
+                        TimeSpan.FromMinutes(_jwtOptions.Value.Expires)
+                });
+        }
+        public async Task<bool> IsActiveToken(string token)
+        {
+            return await _cache.GetStringAsync(token) == null;
         }
     }
 }
