@@ -1,5 +1,9 @@
 using Blogify_API;
 using Blogify_API.Datas;
+using Blogify_API.Services.IServices;
+using Blogify_API.Services;
+using Delivery_API.Services.IServices;
+using Delivery_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -7,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using Delivery_API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +29,12 @@ builder.Services.AddControllers().
     }); ;
 
 
+
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+
+builder.Services.AddScoped<ExceptionHandleMiddleware>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -105,9 +115,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionHandleMiddleware>();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

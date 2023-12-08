@@ -7,5 +7,6 @@ namespace Delivery_API.Services.IServices
     {
         bool IsUniqueUser(UserRegisterDto register);
         Task<TokenResponse> Register(UserRegisterDto register);
+        Task<TokenResponse> Login(LoginDto credentials);
     }
 }

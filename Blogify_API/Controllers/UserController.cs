@@ -1,5 +1,4 @@
-﻿using Azure;
-using Blogify_API.Dtos;
+﻿using Blogify_API.Dtos;
 using Delivery_API.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,6 +37,23 @@ namespace Blogify_API.Controllers
             {
                 return Ok(await _userService.Register(register));
             }
+        }
+        #endregion
+
+        #region Log in
+        /// <summary>
+        /// Log in to the system
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
+        [HttpPost("login")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<TokenResponse>> Login([FromBody] LoginDto login)
+        {
+            return Ok(await _userService.Login(login));
         }
         #endregion
     }
