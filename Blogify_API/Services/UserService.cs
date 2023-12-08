@@ -4,13 +4,7 @@ using Blogify_API.Dtos;
 using Blogify_API.Exceptions;
 using Blogify_API.Services.IServices;
 using Delivery_API.Services.IServices;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Delivery_API.Services
@@ -74,5 +68,30 @@ namespace Delivery_API.Services
             };
         }
 
+        public async Task<UserDto> GetProfile(Guid userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            return user == null
+                ? throw new NotFoundException(new Response
+                {
+                    Message = "User does not exist"
+                })
+                : _mapper.Map<UserDto>(user);
+        }
+        public async Task EditProfile(UserEditDto profile, Guid userId)
+        {
+            var user = await _context.Users.FindAsync(userId) ?? throw new NotFoundException(new Response
+                {
+                    Message = "User does not exist"
+                });
+            user.FullName = profile.FullName;
+            user.BirthDate = profile.BirthDate;
+            user.Gender = profile.Gender;
+            user.PhoneNumber = profile.PhoneNumber;
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

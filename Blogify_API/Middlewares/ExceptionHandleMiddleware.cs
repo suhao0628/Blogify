@@ -1,10 +1,6 @@
 ﻿using Blogify_API.Dtos;
 using Blogify_API.Exceptions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
-using System.Threading.Tasks;
 namespace Delivery_API.Middleware
 {
     public class ExceptionHandleMiddleware: IMiddleware

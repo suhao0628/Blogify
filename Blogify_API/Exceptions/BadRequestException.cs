@@ -1,6 +1,4 @@
-﻿
-
-using Blogify_API.Dtos;
+﻿using Blogify_API.Dtos;
 
 namespace Blogify_API.Exceptions
 {
