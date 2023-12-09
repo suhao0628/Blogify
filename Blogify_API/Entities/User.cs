@@ -2,7 +2,7 @@
 using Blogify_API.Dtos.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace Blogify_API.Dtos
+namespace Blogify_API.Entities
 {
     public class User
     {

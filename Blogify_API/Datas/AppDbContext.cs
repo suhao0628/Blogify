@@ -12,5 +12,6 @@ namespace Blogify_API.Datas
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Author> Authors { get; set; }
+        public DbSet<Community> Communities { get; set; }
     }
 }

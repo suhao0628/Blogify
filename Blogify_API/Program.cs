@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using Delivery_API.Middleware;
+using Delivery_API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<ICommunityService, CommunityService>();
 //builder.Services.AddScoped<ExceptionHandleMiddleware>();
 //builder.Services.AddScoped<JwtMiddleware>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -117,12 +119,22 @@ builder.Services.AddAuthentication
 
 var app = builder.Build();
 
+//SeedData
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+
+//    Initializer.Initialize(services);
+//}
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 //app.UseMiddleware<ExceptionHandleMiddleware>();
 //app.UseMiddleware<JwtMiddleware>();
 
