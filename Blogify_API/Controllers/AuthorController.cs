@@ -1,11 +1,26 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Blogify_API.Dtos;
+using Blogify_API.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blogify_API.Controllers
 {
-    [Route("api/[author]")]
+    [Route("api/author")]
     [ApiController]
     public class AuthorController : ControllerBase
     {
+        private readonly IAuthorService _authorService;
+
+        public AuthorController(IAuthorService authorService)
+        {
+            _authorService = authorService;
+        }
+
+        [HttpGet("list")]
+        public async Task<ActionResult<List<AuthorDto>>> GetAuthors()
+        {
+            return Ok(await _authorService.GetAuthors());
+        }
     }
 }
