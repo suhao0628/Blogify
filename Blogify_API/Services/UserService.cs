@@ -98,17 +98,17 @@ namespace Delivery_API.Services
                     Message = "User does not exist"
                 });
             }
-            var profile = new UserDto
-            {
-                Id= userId,
-                CreateTime = DateTime.Now,
-                FullName = user.FullName,
-                BirthDate = user.BirthDate,
-                Gender = user.Gender,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-            };
-            return profile;// _mapper.Map<UserDto>(user);
+            //var profile = new UserDto
+            //{
+            //    Id= userId,
+            //    CreateTime = DateTime.Now,
+            //    FullName = user.FullName,
+            //    BirthDate = user.BirthDate,
+            //    Gender = user.Gender,
+            //    Email = user.Email,
+            //    PhoneNumber = user.PhoneNumber,
+            //};
+            return _mapper.Map<UserDto>(user);
         }
         public async Task EditProfile(UserEditDto profile, Guid userId)
         {

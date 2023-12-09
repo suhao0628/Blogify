@@ -1,4 +1,5 @@
 ﻿using Blogify_API.Dtos;
+using Blogify_API.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -10,5 +11,6 @@ namespace Blogify_API.Datas
         {
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<Author> Authors { get; set; }
     }
 }
