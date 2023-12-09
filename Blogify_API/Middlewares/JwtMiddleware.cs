@@ -19,7 +19,7 @@ namespace Delivery_API.Middleware
 
                 if (context.Request.Headers.TryGetValue("authorization", out var authHeaderValue))
                 {
-                    token = authHeaderValue.FirstOrDefault()?.Split(" ").Last() ?? string.Empty;
+                    token = authHeaderValue.FirstOrDefault()? .Split(" ").Last() ?? string.Empty;
                 }
                 if (!await _userService.IsActiveToken(token))
                 {

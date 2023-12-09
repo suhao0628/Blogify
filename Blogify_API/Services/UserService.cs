@@ -12,7 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Delivery_API.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
@@ -20,12 +20,14 @@ namespace Delivery_API.Services
         private readonly IDistributedCache _cache;
         private readonly IOptions<JwtConfig> _jwtOptions;
 
-        public UserService(AppDbContext context, IMapper mapper, IJwtService jwtService)
+        public UserService(AppDbContext context, IMapper mapper, IJwtService jwtService, IDistributedCache cache, IOptions<JwtConfig> jwtOptions)
         {
             _context = context;
             _mapper = mapper;
             _jwtService = jwtService;
-            
+            _cache = cache;
+            _jwtOptions = jwtOptions;
+
         }
         public bool IsUniqueUser(UserRegisterDto register)
         {
@@ -72,32 +74,6 @@ namespace Delivery_API.Services
                 Token = new JwtSecurityTokenHandler().WriteToken(_jwtService.GenerateToken(user))
             };
         }
-
-        public async Task<UserDto> GetProfile(Guid userId)
-        {
-            var user = await _context.Users.FindAsync(userId);
-
-            return user == null
-                ? throw new NotFoundException(new Response
-                {
-                    Message = "User does not exist"
-                })
-                : _mapper.Map<UserDto>(user);
-        }
-        public async Task EditProfile(UserEditDto profile, Guid userId)
-        {
-            var user = await _context.Users.FindAsync(userId) ?? throw new NotFoundException(new Response
-                {
-                    Message = "User does not exist"
-                });
-            user.FullName = profile.FullName;
-            user.BirthDate = profile.BirthDate;
-            user.Gender = profile.Gender;
-            user.PhoneNumber = profile.PhoneNumber;
-
-            _context.Update(user);
-            await _context.SaveChangesAsync();
-        }
         public async Task Logout(string token)
         {
             await _cache.SetStringAsync(token,
@@ -110,6 +86,49 @@ namespace Delivery_API.Services
         public async Task<bool> IsActiveToken(string token)
         {
             return await _cache.GetStringAsync(token) == null;
+        }
+        public async Task<UserDto> GetProfile(Guid userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundException(new Response
+                {
+                    Message = "User does not exist"
+                });
+            }
+            var profile = new UserDto
+            {
+                Id= userId,
+                CreateTime = DateTime.Now,
+                FullName = user.FullName,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+            };
+            return profile;// _mapper.Map<UserDto>(user);
+        }
+        public async Task EditProfile(UserEditDto profile, Guid userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundException(new Response
+                {
+                    Message = "User does not exist"
+                });
+            }
+
+            user.FullName = profile.FullName;
+            user.BirthDate = profile.BirthDate;
+            user.Gender = profile.Gender;
+            user.PhoneNumber = profile.PhoneNumber;
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
         }
     }
 }
