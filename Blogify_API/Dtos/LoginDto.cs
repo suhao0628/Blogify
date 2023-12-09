@@ -12,7 +12,6 @@ namespace Blogify_API.Dtos
 
         [Required]
         [MinLength(1)]
-        [PasswordValidation]
         public string Password { get; set; }
     }
 }
