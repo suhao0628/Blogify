@@ -4,6 +4,7 @@ using Blogify_API.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogify_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231221180327_CreateTagEntity")]
+    partial class CreateTagEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,59 +98,6 @@ namespace Blogify_API.Migrations
                     b.ToTable("CommunityUser");
                 });
 
-            modelBuilder.Entity("Blogify_API.Entities.Post", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("CommentsCount")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("CommunityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CommunityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasLike")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Image")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("Likes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReadingTime")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Posts");
-                });
-
             modelBuilder.Entity("Blogify_API.Entities.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -161,12 +111,7 @@ namespace Blogify_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PostId");
 
                     b.ToTable("Tags");
                 });
@@ -234,21 +179,9 @@ namespace Blogify_API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Blogify_API.Entities.Tag", b =>
-                {
-                    b.HasOne("Blogify_API.Entities.Post", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("PostId");
-                });
-
             modelBuilder.Entity("Blogify_API.Entities.Community", b =>
                 {
                     b.Navigation("CommunityUsers");
-                });
-
-            modelBuilder.Entity("Blogify_API.Entities.Post", b =>
-                {
-                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

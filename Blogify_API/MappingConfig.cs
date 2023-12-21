@@ -13,6 +13,7 @@ namespace Blogify_API
             CreateMap<User, UserRegisterDto>().ReverseMap();
 
             CreateMap<Community, CommunityDto>().ReverseMap();
+            CreateMap<Tag, TagDto>().ReverseMap();
         }
     }
 }
