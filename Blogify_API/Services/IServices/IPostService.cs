@@ -7,5 +7,7 @@ namespace Blogify_API.Services.IServices
     {
         Task<Guid> CreatePost(PostCreateDto postCreateDto, Guid userId);
         Task<PostFullDto> GetPostDetails(Guid postId, Guid? userId);
+        Task AddLike(Guid postId, Guid userId);
+        Task DeleteLike(Guid postId, Guid userId);
     }
 }

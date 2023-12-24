@@ -145,5 +145,77 @@ namespace Blogify_API.Services
             return postFullDto;
         }
 
+        public async Task AddLike(Guid postId, Guid userId)
+        {
+            var post = await _context.Posts.Include(post => post.Tags).Include(post => post.Comments).Include(post => post.LikeLists).FirstOrDefaultAsync(post => post.Id == postId)
+                ??throw new NotFoundException(new Response
+            {
+                Status = "Error",
+                Message = $"Post with Guid={postId} not found."
+            });
+
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId)
+                            ?? throw new NotFoundException(new Response
+                            {
+                                Status = "Error",
+                                Message = "User not found."
+                            });
+
+            var author = await _context.Authors.FirstOrDefaultAsync(author => author.UserId == post.AuthorId)
+                         ?? throw new NotFoundException(new Response
+                         {
+                             Status = "Error",
+                             Message = "Author not found."
+                         });
+
+
+            if (post.LikeLists.Any(liked => liked.UserId == user.Id))
+                throw new Exception("User has already liked this post.");
+
+
+            post.LikeLists.Add(
+                new Like { PostId = post.Id, UserId = user.Id }
+            );
+            post.Likes++;
+            author.Likes++;
+
+            await _context.SaveChangesAsync();
+
+        }
+
+        public async Task DeleteLike(Guid postId, Guid userId)
+        {
+            var post = await _context.Posts.Include(post => post.Tags).Include(post => post.Comments).Include(post => post.LikeLists).FirstOrDefaultAsync(post => post.Id == postId)
+                ?? throw new NotFoundException(new Response
+                {
+                    Status = "Error",
+                    Message = $"Post with Guid={postId} not found."
+                });
+
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId)
+                            ?? throw new NotFoundException(new Response
+                            {
+                                Status = "Error",
+                                Message = "User not found."
+                            });
+
+
+            var existingLike = await _context.Likes.FirstOrDefaultAsync(like =>like.PostId == post.Id&& like.UserId == user.Id)
+                               ?? throw new Exception("User has not liked this post.");
+
+            var author = await _context.Authors.FirstOrDefaultAsync(author => author.UserId == post.AuthorId)
+                        ?? throw new NotFoundException(new Response
+                        {
+                            Status = "Error",
+                            Message = "Author not found."
+                        });
+
+
+            post.LikeLists.Remove(existingLike);
+            post.Likes--;
+            author.Likes--;
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

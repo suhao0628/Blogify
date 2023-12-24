@@ -35,5 +35,23 @@ namespace Blogify_API.Controllers
             return Ok(await _postService.GetPostDetails(postId, userId));
         }
 
+        [Authorize]
+        [HttpPost("{postId}/like")]
+        public async Task<IActionResult> AddLike(Guid postId)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            await _postService.AddLike(postId, userId);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("{postId}/like")]
+        public async Task<IActionResult> DeleteLike(Guid postId)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            await _postService.DeleteLike(postId, userId);
+            return Ok();
+        }
+
     }
 }
