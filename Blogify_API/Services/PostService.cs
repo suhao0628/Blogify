@@ -8,10 +8,12 @@ using Blogify_API.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Blogify_API.Entities.Enums;
+using Blogify_API.Dtos.Comment;
 
 namespace Blogify_API.Services
 {
-    public class PostService: IPostService
+    public class PostService : IPostService
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
@@ -85,5 +87,63 @@ namespace Blogify_API.Services
             }
             return postId;
         }
+
+
+        public async Task<PostFullDto> GetPostDetails(Guid postId, Guid? userId)
+        {
+            var post = await _context.Posts.Include(post => post.Tags).Include(post => post.Comments).Include(post => post.LikeLists).FirstOrDefaultAsync(post => post.Id == postId);
+
+
+            if (post == null)
+            {
+                throw new NotFoundException(new Response
+                {
+                    Status = "Error",
+                    Message = $"Post with Guid={postId} not found."
+                });
+            }
+            var hasLike = false;
+            if (userId != null)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId)
+                           ?? throw new NotFoundException(new Response
+                           {
+                               Status = "Error",
+                               Message = "User not found."
+                           });
+
+                hasLike = post.LikeLists.Any(liked => liked.UserId == user.Id);
+            }
+
+            var tagDtos = post.Tags
+                .Select(tag => _mapper.Map<TagDto>(tag))
+                .ToList();
+
+            var comments = post.Comments
+                .Select(comment => _mapper.Map<CommentDto>(comment))
+                .ToList();
+
+            var postFullDto = new PostFullDto
+            {
+                Id = post.Id,
+                CreateTime = post.CreateTime,
+                Title = post.Title,
+                Description = post.Description,
+                ReadingTime = post.ReadingTime,
+                Image = post.Image,
+                AuthorId = post.AuthorId,
+                Author = post.Author,
+                CommunityId = post.CommunityId,
+                CommunityName = post.CommunityName,
+                Likes = post.Likes,
+                HasLike = hasLike,
+                CommentsCount = post.CommentsCount,
+                Tags = tagDtos,
+                Comments = comments
+            };
+
+            return postFullDto;
+        }
+
     }
 }

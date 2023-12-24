@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blogify_API.Dtos;
+using Blogify_API.Dtos.Comment;
 using Blogify_API.Dtos.Community;
 using Blogify_API.Entities;
 
@@ -14,6 +15,8 @@ namespace Blogify_API
 
             CreateMap<Community, CommunityDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
+
+            CreateMap<Comment, CommentDto>();
         }
     }
 }

@@ -13,7 +13,10 @@ namespace Blogify_API.Datas
         public DbSet<User> Users { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Community> Communities { get; set; }
+        public DbSet<CommunityUser> CommunityUsers { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Like> Likes { get; set; }
+
     }
 }

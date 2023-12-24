@@ -4,6 +4,7 @@ using Blogify_API.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogify_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231223112550_AddLikesEntity")]
+    partial class AddLikesEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,45 +45,6 @@ namespace Blogify_API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Authors");
-                });
-
-            modelBuilder.Entity("Blogify_API.Entities.Comment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SubComments")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Community", b =>
@@ -277,13 +241,6 @@ namespace Blogify_API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Blogify_API.Entities.Comment", b =>
-                {
-                    b.HasOne("Blogify_API.Entities.Post", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("PostId");
-                });
-
             modelBuilder.Entity("Blogify_API.Entities.CommunityUser", b =>
                 {
                     b.HasOne("Blogify_API.Entities.Community", null)
@@ -332,8 +289,6 @@ namespace Blogify_API.Migrations
 
             modelBuilder.Entity("Blogify_API.Entities.Post", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("LikeLists");
 
                     b.Navigation("Tags");

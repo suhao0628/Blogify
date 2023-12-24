@@ -1,6 +1,7 @@
 ﻿using Blogify_API.Dtos;
 using Blogify_API.Dtos.Post;
 using Blogify_API.Entities;
+using Blogify_API.Entities.Enums;
 using Blogify_API.Services;
 using Blogify_API.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
@@ -19,13 +20,19 @@ namespace Blogify_API.Controllers
         {
             _postService = postService;
         }
-
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreatePost(PostCreateDto postCreateDto)
         {
             var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
             return Ok(await _postService.CreatePost(postCreateDto, userId));
+        }
+        [AllowAnonymous]
+        [HttpGet("{postId}")]
+        public async Task<ActionResult<PostFullDto>> GetPostDetails(Guid postId)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            return Ok(await _postService.GetPostDetails(postId, userId));
         }
 
     }
