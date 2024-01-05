@@ -18,5 +18,6 @@ namespace Blogify_API.Datas
         public DbSet<Post> Posts { get; set; }
         public DbSet<Like> Likes { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
     }
 }

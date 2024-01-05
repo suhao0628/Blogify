@@ -27,5 +27,9 @@ namespace Blogify_API.Entities
 
         [Required]
         public int SubComments { get; set; }
+
+        public Guid PostId { get; set; }
+        public Guid? ParentId { get; set; }
+        
     }
 }
