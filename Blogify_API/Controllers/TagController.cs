@@ -15,7 +15,10 @@ namespace Blogify_API.Controllers
         {
             _tagService = tagService;
         }
-
+        /// <summary>
+        /// Get tag list
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<List<TagDto>>> GetTags()
         {

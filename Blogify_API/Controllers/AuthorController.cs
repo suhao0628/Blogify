@@ -16,7 +16,10 @@ namespace Blogify_API.Controllers
         {
             _authorService = authorService;
         }
-
+        /// <summary>
+        /// Get author list(Users who sent the post)
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("list")]
         public async Task<ActionResult<List<AuthorDto>>> GetAuthors()
         {

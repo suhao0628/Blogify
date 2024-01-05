@@ -4,6 +4,7 @@ using Blogify_API.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.Design;
 using System.Security.Claims;
 
 namespace Blogify_API.Controllers
@@ -18,13 +19,23 @@ namespace Blogify_API.Controllers
         {
             _commentService = commentService;
         }
+        /// <summary>
+        /// Get all nested comments
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
         [HttpGet("{commentId}/tree")]
         public async Task<ActionResult<List<CommentDto>>> GetNestedComments(Guid commentId)
         {
             var comments = await _commentService.GetNestedComments(commentId);
             return Ok(comments);
         }
-
+        /// <summary>
+        /// Add a comment to concrete post
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <param name="commentCreateDto"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("/api/post/{postId}/comment")]
         public async Task<IActionResult> AddComment(Guid postId, CommentCreateDto commentCreateDto)
@@ -34,6 +45,12 @@ namespace Blogify_API.Controllers
             await _commentService.AddComment(postId, userId, commentCreateDto);
             return Ok();
         }
+        /// <summary>
+        /// Edit concrete comment
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <param name="commentUpdateDto"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut("{commentId}")]
         public async Task<IActionResult> UpdateComment(Guid commentId, CommentUpdateDto commentUpdateDto)
@@ -43,6 +60,11 @@ namespace Blogify_API.Controllers
             await _commentService.UpdateComment(commentId, userId, commentUpdateDto);
             return Ok();
         }
+        /// <summary>
+        /// Delete concrete comment
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(Guid commentId)
