@@ -20,6 +20,16 @@ namespace Blogify_API.Controllers
         {
             _postService = postService;
         }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult<PostPagedListDto>> GetAllAvailablePosts([FromQuery] List<Guid>? tags, [FromQuery] string? author, [FromQuery] int? min, [FromQuery] int? max, [FromQuery] PostSorting? sorting, [FromQuery] bool onlyMyCommunities = false, [FromQuery] int page = 1, [FromQuery] int size = 5)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            return Ok(
+                await _postService.GetAvailablePosts(userId, tags, author, min, max, sorting, onlyMyCommunities, page, size)
+            );
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreatePost(PostCreateDto postCreateDto)

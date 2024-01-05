@@ -22,6 +22,116 @@ namespace Blogify_API.Services
             _context = context;
             _mapper = mapper;
         }
+
+        public async Task<PostPagedListDto> GetAvailablePosts(Guid? userId, List<Guid>? tags, string? author, int? min, int? max, PostSorting? sorting, bool onlyMyCommunities, int page, int size)
+        {
+            IQueryable<Post> postsQueryable = _context.Posts;
+            if (!tags.IsNullOrEmpty())
+            {
+                foreach (var guid in tags)
+                {
+                    if (await _context.Tags.FirstOrDefaultAsync(tag => tag.Id == guid) == null)
+                        throw new NotFoundException(new Response
+                        {
+                            Status = "Error",
+                            Message = $"Tag with Guid={guid} not found."
+                        });
+                }
+
+                postsQueryable = postsQueryable.ToList().Where(post => post.Tags.Select(tag => tag.Id).Intersect(tags).Count() == tags.Count).AsQueryable();
+            }
+            if (author != null)
+            {
+                postsQueryable = postsQueryable.Where(post => post.Author.Contains(author));
+            }
+
+            if (min != null)
+            {
+                postsQueryable = postsQueryable.Where(post => post.ReadingTime >= min);
+            }
+
+            if (max != null)
+            {
+                postsQueryable = postsQueryable.Where(post => post.ReadingTime <= max);
+            }
+            if (sorting != null)
+            {
+                postsQueryable = GetSortedPosts(postsQueryable, (PostSorting)sorting);
+            }
+
+            if (onlyMyCommunities && userId != null)
+            {
+                var communityUsers = await _context.CommunityUsers.Where(cu => cu.UserId == userId).ToListAsync();
+                var communityIds = communityUsers.Where(cu => cu.UserId == userId).Select(cu => cu.CommunityId).ToList();
+                postsQueryable = postsQueryable.Where(post => post.CommunityId != null && communityIds.Contains((Guid)post.CommunityId));
+            }
+            var postsCount = postsQueryable.Count();
+            var paginationCount = !postsQueryable.IsNullOrEmpty() ? (int)Math.Ceiling((double)postsCount / size) : 0;
+
+            var pagination = new PageInfoModel
+            {
+                Size = size,
+                Count = paginationCount,
+                Current = page
+            };
+
+            var posts = postsQueryable.Skip((pagination.Current - 1) * pagination.Size).Take(pagination.Size).ToList();
+
+            User? user = null;
+            if (userId != null)
+            {
+                user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId)
+                    ?? throw new NotFoundException(new Response
+                    {
+                        Status = "Error",
+                        Message = "User not found."
+                    });
+            }
+            var postsDto = posts.Select(post =>
+            {
+                var hasLike = false;
+                if (user != null)
+                {
+                    hasLike = post.LikeLists.Any(liked => liked.UserId == user.Id);
+                }
+                var tagDtos = post.Tags.Select(tag => _mapper.Map<TagDto>(tag)).ToList();
+                return new PostDto
+                {
+                    Id = post.Id,
+                    CreateTime = post.CreateTime,
+                    Title = post.Title,
+                    Description = post.Description,
+                    ReadingTime = post.ReadingTime,
+                    Image = post.Image,
+                    AuthorId = post.AuthorId,
+                    Author = post.Author,
+                    CommunityId = post.CommunityId,
+                    CommunityName = post.CommunityName,
+                    Likes = post.Likes,
+                    HasLike = hasLike,
+                    CommentsCount = post.CommentsCount,
+                    Tags = tagDtos
+                };
+            }).ToList();
+
+            return new PostPagedListDto
+            {
+                Posts = postsDto,
+                Pagination = pagination
+            };
+        }
+        public IQueryable<Post> GetSortedPosts(IQueryable<Post> posts, PostSorting postSorting)
+        {
+            return postSorting switch
+            {
+                PostSorting.CreateAsc => posts.OrderBy(post => post.CreateTime),
+                PostSorting.CreateDesc => posts.OrderByDescending(post => post.CreateTime),
+                PostSorting.LikeAsc => posts.OrderBy(post => post.Likes),
+                PostSorting.LikeDesc => posts.OrderByDescending(post => post.Likes),
+                _ => throw new ArgumentOutOfRangeException(nameof(postSorting), postSorting, null)
+            };
+        }
+
         public async Task<Guid> CreatePost(PostCreateDto postCreateDto, Guid userId)
         {
             var user = await _context.Users.FindAsync(userId)
