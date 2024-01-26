@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Blogify_API.Entities.Enums;
 using Blogify_API.Dtos.Comment;
 using Blogify_API.Dtos.Tag;
+using System;
 
 namespace Blogify_API.Services
 {
@@ -66,9 +67,17 @@ namespace Blogify_API.Services
                 var communityIds = communityUsers.Where(cu => cu.UserId == userId).Select(cu => cu.CommunityId).ToList();
                 postsQueryable = postsQueryable.Where(post => post.CommunityId != null && communityIds.Contains((Guid)post.CommunityId));
             }
+
             var postsCount = postsQueryable.Count();
             var paginationCount = !postsQueryable.IsNullOrEmpty() ? (int)Math.Ceiling((double)postsCount / size) : 0;
-
+            if(page > (int)Math.Ceiling((double)paginationCount / size))
+            {
+                throw new BadRequestException(new Response
+                {
+                    Status = "Error",
+                    Message = "Invalid value for attribute page."
+                });
+            }
             var pagination = new PageInfoModel
             {
                 Size = size,
