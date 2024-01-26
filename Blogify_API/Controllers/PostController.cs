@@ -7,6 +7,7 @@ using Blogify_API.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blogify_API.Controllers
 {
@@ -34,7 +35,7 @@ namespace Blogify_API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<PostPagedListDto>> GetAllAvailablePosts([FromQuery] List<Guid>? tags, [FromQuery] string? author, [FromQuery] int? min, [FromQuery] int? max, [FromQuery] PostSorting? sorting, [FromQuery] bool onlyMyCommunities = false, [FromQuery] int page = 1, [FromQuery] int size = 5)
+        public async Task<ActionResult<PostPagedListDto>> GetAllAvailablePosts([FromQuery] List<Guid>? tags, [FromQuery] string? author, [FromQuery][Range(0, int.MaxValue)] int? min, [FromQuery][Range(0, int.MaxValue)] int? max, [FromQuery] PostSorting? sorting, [FromQuery] bool onlyMyCommunities = false, [FromQuery][Range(1, int.MaxValue)] int page = 1, [FromQuery][Range(1, int.MaxValue)] int size = 5)
         {
             var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
             return Ok(

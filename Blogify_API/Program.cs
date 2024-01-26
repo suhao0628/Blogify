@@ -47,8 +47,8 @@ builder.Services.AddScoped<ICommunityService, CommunityService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-//builder.Services.AddScoped<ExceptionHandleMiddleware>();
-//builder.Services.AddScoped<JwtMiddleware>();
+builder.Services.AddScoped<ExceptionHandleMiddleware>();
+builder.Services.AddScoped<JwtMiddleware>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -138,8 +138,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseMiddleware<ExceptionHandleMiddleware>();
-//app.UseMiddleware<JwtMiddleware>();
+app.UseMiddleware<ExceptionHandleMiddleware>();
+app.UseMiddleware<JwtMiddleware>();
 
 app.UseHttpsRedirection();
 
