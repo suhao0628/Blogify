@@ -26,7 +26,7 @@ namespace Blogify_API.Services
 
         public async Task<PostPagedListDto> GetAvailablePosts(Guid? userId, List<Guid>? tags, string? author, int? min, int? max, PostSorting? sorting, bool onlyMyCommunities, int page, int size)
         {
-            IQueryable<Post> postsQueryable = _context.Posts;
+            IQueryable<Post> postsQueryable = _context.Posts.Include(p=>p.LikeLists).Include(p => p.Tags);
             if (!tags.IsNullOrEmpty())
             {
                 foreach (var guid in tags)
