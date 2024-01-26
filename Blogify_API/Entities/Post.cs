@@ -40,7 +40,7 @@ namespace Blogify_API.Entities
         public List<Like> LikeLists { get; set; }
 
         [Required]
-        public List<Comment> Comments { get; set; } = new();
+        public List<Comment> Comments { get; set; }
 
     }
 }

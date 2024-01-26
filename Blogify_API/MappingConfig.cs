@@ -14,6 +14,8 @@ namespace Blogify_API
             CreateMap<User, UserRegisterDto>().ReverseMap();
 
             CreateMap<Community, CommunityDto>().ReverseMap();
+            CreateMap<CommunityUser, CommunityUserDto>().ReverseMap();
+            
             CreateMap<Tag, TagDto>().ReverseMap();
 
             CreateMap<Comment, CommentDto>();

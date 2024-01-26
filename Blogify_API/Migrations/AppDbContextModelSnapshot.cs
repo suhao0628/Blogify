@@ -41,7 +41,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Comment", b =>
@@ -83,7 +83,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Community", b =>
@@ -110,7 +110,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Communities");
+                    b.ToTable("Communities", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.CommunityUser", b =>
@@ -134,7 +134,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommunityUsers");
+                    b.ToTable("CommunityUsers", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Like", b =>
@@ -155,7 +155,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Post", b =>
@@ -208,7 +208,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Tag", b =>
@@ -231,7 +231,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.User", b =>
@@ -266,7 +266,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Author", b =>
