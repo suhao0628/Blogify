@@ -1,7 +1,7 @@
 ﻿using Blogify_API.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace Blogify_API.Dtos
+namespace Blogify_API.Dtos.User
 {
     public class LoginDto
     {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Blogify_API.Datas;
-using Blogify_API.Dtos;
 using Blogify_API.Dtos.Community;
+using Blogify_API.Dtos.Tag;
 using Blogify_API.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,4 +1,5 @@
 ﻿using Blogify_API.Dtos.Comment;
+using Blogify_API.Dtos.Tag;
 using System.ComponentModel.DataAnnotations;
 
 namespace Blogify_API.Dtos.Post

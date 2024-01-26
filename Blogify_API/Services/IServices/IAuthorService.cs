@@ -1,4 +1,4 @@
-﻿using Blogify_API.Dtos;
+﻿using Blogify_API.Dtos.Author;
 
 namespace Blogify_API.Services.IServices
 {

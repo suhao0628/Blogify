@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using Blogify_API.Dtos;
 using Blogify_API.Dtos.Comment;
 using Blogify_API.Dtos.Community;
+using Blogify_API.Dtos.Tag;
+using Blogify_API.Dtos.User;
 using Blogify_API.Entities;
 
 namespace Blogify_API

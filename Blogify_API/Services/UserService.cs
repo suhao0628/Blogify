@@ -2,6 +2,7 @@
 using Blogify_API;
 using Blogify_API.Datas;
 using Blogify_API.Dtos;
+using Blogify_API.Dtos.User;
 using Blogify_API.Entities;
 using Blogify_API.Exceptions;
 using Blogify_API.Services.IServices;

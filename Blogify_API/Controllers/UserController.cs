@@ -1,4 +1,5 @@
 ﻿using Blogify_API.Dtos;
+using Blogify_API.Dtos.User;
 using Delivery_API.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

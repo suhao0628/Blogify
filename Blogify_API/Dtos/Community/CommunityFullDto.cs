@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Blogify_API.Dtos.User;
 
 namespace Blogify_API.Dtos.Community
 {

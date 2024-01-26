@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Blogify_API.Dtos
+namespace Blogify_API.Dtos.Tag
 {
     public class TagDto
     {

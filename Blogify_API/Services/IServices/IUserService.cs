@@ -1,4 +1,5 @@
 ﻿using Blogify_API.Dtos;
+using Blogify_API.Dtos.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Delivery_API.Services.IServices

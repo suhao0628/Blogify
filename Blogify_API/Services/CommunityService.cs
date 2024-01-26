@@ -3,6 +3,8 @@ using Blogify_API.Datas;
 using Blogify_API.Dtos;
 using Blogify_API.Dtos.Community;
 using Blogify_API.Dtos.Post;
+using Blogify_API.Dtos.Tag;
+using Blogify_API.Dtos.User;
 using Blogify_API.Entities;
 using Blogify_API.Entities.Enums;
 using Blogify_API.Exceptions;
@@ -10,6 +12,7 @@ using Blogify_API.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 using System.Net.WebSockets;
 
 namespace Blogify_API.Services
@@ -34,6 +37,7 @@ namespace Blogify_API.Services
             }
             return communityDtos;
         }
+
         public async Task<CommunityFullDto> GetCommunity(Guid communityId)
         {
             var community = await _context.Communities.Include(c=>c.CommunityUsers).FirstOrDefaultAsync(c => c.Id == communityId) ?? throw new NotFoundException(new Response
@@ -65,7 +69,108 @@ namespace Blogify_API.Services
             };
             return communityFullDto;
         }
+        public async Task<Guid> CreateCommunity(CommunityCreateDto createCommunityDto, Guid userId)
+        {
+            var createUser = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId)
+                        ?? throw new NotFoundException(new Response
+                        {
+                            Status = "Error",
+                            Message = "User not found."
+                        });
+            var community = new Community()
+            {
+                Id = Guid.NewGuid(),
+                CreatedTime = DateTime.UtcNow,
+                Name = createCommunityDto.Name,
+                Description = createCommunityDto.Description,
+                IsClosed = createCommunityDto.IsClosed,
+                SubscribersCount = 0,
+            };
+            var adminCommunityUser = new CommunityUser
+            {
+                CommunityId = community.Id,
+                UserId = userId,
+                Role = CommunityRole.Administrator
+            };
+            await _context.Communities.AddAsync(community);
+            await _context.CommunityUsers.AddAsync(adminCommunityUser);
+            await _context.SaveChangesAsync();
 
+            return community.Id;
+        }
+
+        public async Task UpdateCommunity(Guid communityId, Guid userId, CommunityUpdateDto communityUpdateDto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId)
+                        ?? throw new NotFoundException(new Response
+                        {
+                            Status = "Error",
+                            Message = "User not found."
+                        });
+            var communityUser = await _context.CommunityUsers.FirstOrDefaultAsync(uc => uc.CommunityId == communityId);
+            if (communityUser == null || communityUser.Role != CommunityRole.Administrator)
+            {
+                throw new ForbiddenException(new Response
+                {
+                    Status = "Error",
+                    Message = "Sorry, you don't have permission to edit this community"
+                });
+            }
+            var community = await _context.Communities.FirstOrDefaultAsync(c => c.Id == communityId)
+                        ?? throw new NotFoundException(new Response
+                        {
+                            Status = "Error",
+                            Message = "Community not found."
+                        });
+            community.Name = communityUpdateDto.Name;
+            community.Description = communityUpdateDto.Description;
+            community.IsClosed = communityUpdateDto.IsClosed;
+             _context.Update(community);
+            await _context.SaveChangesAsync();
+        }
+        public async Task DeleteCommunity(Guid communityId, Guid userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId)
+                        ?? throw new NotFoundException(new Response
+                        {
+                            Status = "Error",
+                            Message = "User not found."
+                        });
+            var communityUser= await _context.CommunityUsers.FirstOrDefaultAsync(uc => uc.CommunityId == communityId);
+            if (communityUser == null || communityUser.Role != CommunityRole.Administrator)
+            {
+                throw new ForbiddenException(new Response
+                {
+                    Status = "Error",
+                    Message = "Sorry, you don't have permission to delete this community"
+                });
+            }
+
+            var community = await _context.Communities.FirstOrDefaultAsync(c => c.Id == communityId) 
+                ?? throw new NotFoundException(new Response
+            {
+                Status = "Error",
+                Message = "Community not found."
+            }); ;
+            var posts= await _context.Posts.Where(p => p.CommunityId == communityId).ToListAsync();
+            foreach (var post in posts)
+            {
+                var likesInPost= await _context.Likes.Where(l => l.PostId == post.Id).ToListAsync();
+                foreach (var like in likesInPost)
+                {
+                    _context.Likes.Remove(like);
+                }
+                var commentsInPost = await _context.Comments.Where(c => c.PostId == post.Id).ToListAsync();
+                foreach (var comment in commentsInPost)
+                {
+                    _context.Comments.Remove(comment);
+                }
+                _context.Posts.Remove(post);
+            }
+            _context.CommunityUsers.Remove(communityUser);
+            _context.Communities.Remove(community);
+            await _context.SaveChangesAsync();
+        }
         public async Task<PostPagedListDto> GetPostsInCommunity(Guid? userId, Guid communityId, List<Guid>? tags, PostSorting? sorting, int page, int size)
         {
             var community = await _context.Communities.FirstOrDefaultAsync(c => c.Id == communityId)

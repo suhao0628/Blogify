@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Blogify_API.Entities.Enums;
 using Blogify_API.Dtos.Comment;
+using Blogify_API.Dtos.Tag;
 
 namespace Blogify_API.Services
 {

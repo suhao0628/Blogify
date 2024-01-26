@@ -1,4 +1,4 @@
-﻿using Blogify_API.Dtos;
+﻿using Blogify_API.Dtos.Author;
 using Blogify_API.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

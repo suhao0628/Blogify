@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata.Ecma335;
+using Blogify_API.Dtos.Tag;
 
 namespace Blogify_API.Dtos.Post
 {

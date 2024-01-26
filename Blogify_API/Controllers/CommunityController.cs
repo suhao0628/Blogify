@@ -40,6 +40,45 @@ namespace Blogify_API.Controllers
             return Ok(await _communityService.GetCommunity(communityId));
         }
         /// <summary>
+        /// Add a community
+        /// </summary>
+        /// <param name="communityCreateDto"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult<Guid>> CreateCommunity(CommunityCreateDto communityCreateDto)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            return Ok(await _communityService.CreateCommunity(communityCreateDto, userId));
+        }
+        /// <summary>
+        /// Edit a concrete community
+        /// </summary>
+        /// <param name="communityId"></param>
+        /// <param name="communityUpdateDto"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPut("{communityId}")]
+        public async Task<ActionResult<Guid>> UpdateCommunity(Guid communityId, CommunityUpdateDto communityUpdateDto)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            await _communityService.UpdateCommunity(communityId, userId, communityUpdateDto);
+            return Ok();
+        }
+        /// <summary>
+        /// Delete a concrete community
+        /// </summary>
+        /// <param name="communityId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpDelete("{communityId}")]
+        public async Task<IActionResult> DeleteCommunity(Guid communityId)
+        {
+            var userId = Guid.Parse(User.Claims.Where(w => w.Type == "UserId").First().Value);
+            await _communityService.DeleteCommunity(communityId, userId);
+            return Ok();
+        }
+        /// <summary>
         /// Get concrete community's posts
         /// </summary>
         /// <param name="communityId">Unique identifier of the community</param>
