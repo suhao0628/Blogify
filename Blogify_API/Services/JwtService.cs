@@ -1,4 +1,4 @@
-﻿using Blogify_API.Dtos;
+﻿using Blogify_API.Entities;
 using Blogify_API.Services.IServices;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

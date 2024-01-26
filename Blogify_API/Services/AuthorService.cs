@@ -1,5 +1,5 @@
 ﻿using Blogify_API.Datas;
-using Blogify_API.Dtos;
+using Blogify_API.Dtos.Author;
 using Blogify_API.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 

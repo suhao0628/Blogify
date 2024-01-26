@@ -4,6 +4,7 @@ using Blogify_API.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogify_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231223112550_AddLikesEntity")]
+    partial class AddLikesEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,49 +44,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Authors", (string)null);
-                });
-
-            modelBuilder.Entity("Blogify_API.Entities.Comment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SubComments")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Community", b =>
@@ -110,7 +71,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Communities", (string)null);
+                    b.ToTable("Communities");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.CommunityUser", b =>
@@ -134,7 +95,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommunityUsers", (string)null);
+                    b.ToTable("CommunityUsers");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Like", b =>
@@ -155,7 +116,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Post", b =>
@@ -208,7 +169,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Tag", b =>
@@ -231,7 +192,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.User", b =>
@@ -266,7 +227,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Author", b =>
@@ -278,15 +239,6 @@ namespace Blogify_API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Blogify_API.Entities.Comment", b =>
-                {
-                    b.HasOne("Blogify_API.Entities.Post", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.CommunityUser", b =>
@@ -337,8 +289,6 @@ namespace Blogify_API.Migrations
 
             modelBuilder.Entity("Blogify_API.Entities.Post", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("LikeLists");
 
                     b.Navigation("Tags");

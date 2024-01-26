@@ -4,6 +4,7 @@ using Blogify_API.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogify_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231226193956_UpdateComment")]
+    partial class UpdateComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Authors", (string)null);
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Comment", b =>
@@ -70,7 +73,7 @@ namespace Blogify_API.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("ParentId")
+                    b.Property<Guid>("ParentCommentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PostId")
@@ -83,7 +86,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Community", b =>
@@ -110,7 +113,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Communities", (string)null);
+                    b.ToTable("Communities");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.CommunityUser", b =>
@@ -134,7 +137,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommunityUsers", (string)null);
+                    b.ToTable("CommunityUsers");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Like", b =>
@@ -155,7 +158,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Post", b =>
@@ -208,7 +211,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Tag", b =>
@@ -231,7 +234,7 @@ namespace Blogify_API.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.User", b =>
@@ -266,7 +269,7 @@ namespace Blogify_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Blogify_API.Entities.Author", b =>
